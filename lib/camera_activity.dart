@@ -8,62 +8,47 @@ class CameraActivity extends StatefulWidget {
 }
 
 class _CameraActivityState extends State<CameraActivity> {
+  CameraController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    CameraController controller;
-
-    // @override
-    // void didChangeAppLifecycleState(AppLifecycleState state) {
-    //   // App state changed before we got the chance to initialize.
-    //   if (controller == null || !controller.value.isInitialized) {
-    //     return;
-    //   }
-    //   if (state == AppLifecycleState.inactive) {
-    //     controller?.dispose();
-    //   } else if (state == AppLifecycleState.resumed) {
-    //     if (controller != null) {
-    //       onNewCameraSelected(controller.description);
-    //     }
-    //   }
-    // }
-
-    @override
-    void initState() {
-      super.initState();
-      controller = CameraController(cameras[0], ResolutionPreset.medium);
-      controller.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
-      });
-    }
-
-    @override
-    void dispose() {
-      controller?.dispose();
-      super.dispose();
-    }
-
-    @override
-    Widget build(BuildContext context) {
-      if (!controller.value.isInitialized) {
-        print("laaaaaaaaaaaaaaaaaaaaaaaaaa");
-        return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text('Flutter TTS'),
-            ),
-            body: Container(
-              child: Text("Hello Camera"),
-            ),
+    if (!controller.value.isInitialized) {
+      print("laaaaaaaaaaaaaaaaaaaaaaaaaa");
+      return SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Flutter TTS'),
           ),
-        );
-      }
-      print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-      return AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: CameraPreview(controller));
+          body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(),
+            ]),
+          ),
+        ),
+      );
     }
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    return AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: CameraPreview(controller));
   }
 }
