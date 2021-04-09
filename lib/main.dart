@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:vision_assistant/camera_activity.dart';
+import 'package:vision_assistant/experiment_activity.dart';
 
 import 'text_to_speech.dart';
 
@@ -34,8 +35,9 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: "/camera",
+      initialRoute: "/exp",
       routes: {
+        "/exp": (context) => ExperimentAcitvity(),
         "/tts": (context) => TextToSpeech(),
         "/": (context) => MyHomePage(
               title: "My Assistant",
