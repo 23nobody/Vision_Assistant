@@ -31,6 +31,7 @@ dependencies:
   flutter_tts: ^2.1.0
   camera: ^0.8.0
   http: ^0.13.1
+  xfile: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -23,6 +23,12 @@ class _TextToSpeechState extends State<TextToSpeech> {
 
   String _newVoiceText;
 
+  String get newVoiceText => _newVoiceText;
+
+  set newVoiceText(String value) {
+    _newVoiceText = value;
+  }
+
   TtsState ttsState = TtsState.stopped;
 
   get isPlaying => ttsState == TtsState.playing;
