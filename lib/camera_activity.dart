@@ -1,20 +1,49 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vision_assistant/main.dart';
+import 'package:vision_assistant/post_model.dart';
+import 'package:vision_assistant/post_services.dart';
 
 class CameraActivity extends StatefulWidget {
   @override
   _CameraActivityState createState() => _CameraActivityState();
 }
 
+enum TtsState { playing, stopped, paused, continued }
+
 class _CameraActivityState extends State<CameraActivity> {
+  FlutterTts flutterTts;
+  dynamic languages;
+  String language;
+  double volume = 0.5;
+  double pitch = 1.0;
+  double rate = 0.5;
+  bool isCurrentLanguageInstalled = false;
+
+  String _newVoiceText;
+
+  TtsState ttsState = TtsState.stopped;
+
+  get isPlaying => ttsState == TtsState.playing;
+  get isStopped => ttsState == TtsState.stopped;
+  get isPaused => ttsState == TtsState.paused;
+  get isContinued => ttsState == TtsState.continued;
+
+  bool get isIOS => !kIsWeb && Platform.isIOS;
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  bool get isWeb => kIsWeb;
+
   CameraController controller;
   XFile imageFile;
   @override
   void initState() {
     super.initState();
+    initTts();
     controller = CameraController(cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
@@ -26,10 +55,108 @@ class _CameraActivityState extends State<CameraActivity> {
     });
   }
 
+  initTts() {
+    flutterTts = FlutterTts();
+
+    _getLanguages();
+
+    if (isAndroid) {
+      _getEngines();
+    }
+
+    flutterTts.setStartHandler(() {
+      setState(() {
+        print("Playing");
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        print("Complete");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setCancelHandler(() {
+      setState(() {
+        print("Cancel");
+        ttsState = TtsState.stopped;
+      });
+    });
+    if (isWeb || isIOS) {
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
+    }
+
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        print("error: $msg");
+        ttsState = TtsState.stopped;
+      });
+    });
+  }
+
+  Future _getLanguages() async {
+    languages = await flutterTts.getLanguages;
+    if (languages != null) setState(() => languages);
+  }
+
+  Future _getEngines() async {
+    var engines = await flutterTts.getEngines;
+    if (engines != null) {
+      for (dynamic engine in engines) {
+        print(engine);
+      }
+    }
+  }
+
+  Future _speak() async {
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
+
+    if (_newVoiceText != null) {
+      if (_newVoiceText.isNotEmpty) {
+        await flutterTts.awaitSpeakCompletion(true);
+        await flutterTts.speak(_newVoiceText);
+      }
+    }
+  }
+
+  Future _stop() async {
+    var result = await flutterTts.stop();
+    if (result == 1) setState(() => ttsState = TtsState.stopped);
+  }
+
+  Future _pause() async {
+    var result = await flutterTts.pause();
+    if (result == 1) setState(() => ttsState = TtsState.paused);
+  }
+
+  Future<Post> callSpeak() async {
+    Post p = await getPost();
+    _newVoiceText = p.body;
+    _speak();
+    return p;
+  }
+
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
+    flutterTts.stop();
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

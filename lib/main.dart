@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: "/exp",
+      initialRoute: "/camera",
       routes: {
         "/exp": (context) => ExperimentAcitvity(),
         "/tts": (context) => TextToSpeech(),
