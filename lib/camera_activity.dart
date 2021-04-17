@@ -5,8 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:vision_assistant/camera_services.dart';
 import 'package:vision_assistant/main.dart';
-import 'package:vision_assistant/post_model.dart';
 import 'package:vision_assistant/post_services.dart';
 
 class CameraActivity extends StatefulWidget {
@@ -44,7 +44,7 @@ class _CameraActivityState extends State<CameraActivity> {
   void initState() {
     super.initState();
     initTts();
-    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    controller = CameraController(cameras[0], ResolutionPreset.low);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -145,11 +145,13 @@ class _CameraActivityState extends State<CameraActivity> {
     if (result == 1) setState(() => ttsState = TtsState.paused);
   }
 
-  Future<Post> callSpeak() async {
-    Post p = await getPost();
-    _newVoiceText = p.body;
+  Future<void> callSpeak() async {
+    String im = await convertImage(imageFile.path);
+    final r = await createPost(im);
+    print(r.body);
+    // Post p = await getPost();
+    _newVoiceText = r.body;
     _speak();
-    return p;
   }
 
   @override
@@ -263,7 +265,10 @@ class _CameraActivityState extends State<CameraActivity> {
         setState(() {
           imageFile = file;
         });
-        if (file != null) showInSnackBar('Picture saved to ${file.path}');
+        if (file != null) {
+          showInSnackBar('Picture saved to ${file.path}');
+          callSpeak();
+        }
       }
     });
   }

@@ -32,6 +32,7 @@ dependencies:
   camera: ^0.8.0
   http: ^0.13.1
   xfile: ^1.1.0
+  image_size_getter: ^1.0.0
 
 dev_dependencies:
   flutter_test:

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:vision_assistant/post_model.dart';
 
-String url = 'https://jsonplaceholder.typicode.com/posts';
+String url = 'https://b1a4f0ef92ee.ngrok.io/predict';
 
 Future<Post> getPost() async {
   final response = await http.get(Uri.parse('$url/1'));
