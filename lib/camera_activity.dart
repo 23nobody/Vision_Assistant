@@ -25,7 +25,7 @@ class _CameraActivityState extends State<CameraActivity> {
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
 
-  String _newVoiceText;
+  String _newVoiceText = "error!";
 
   TtsState ttsState = TtsState.stopped;
 
@@ -146,11 +146,12 @@ class _CameraActivityState extends State<CameraActivity> {
   }
 
   Future<void> callSpeak() async {
+    // _newVoiceText = "error!";
     String im = await convertImage(imageFile.path);
-    final r = await createPost(im);
-    print(r.body);
+    String r = await createPost(im);
+    print(r);
     // Post p = await getPost();
-    _newVoiceText = r.body;
+    _newVoiceText = r;
     _speak();
   }
 
