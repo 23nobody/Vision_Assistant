@@ -13,12 +13,17 @@ Future<Post> getPost() async {
 }
 
 Future<String> createPost(String img64) async {
+  // Map<String,dynamic> mp = {
+  //   "file" : "sahma"
+  // };
+  //
   // final response = await http.post(Uri.parse('$url'),
   //     headers: {
   //       HttpHeaders.contentTypeHeader: 'application/json',
   //       HttpHeaders.authorizationHeader: ''
   //     },
-  //     body: postToJson(post));
+  //     body: json.encode(mp));
+  // print("Uploaded! " + response.body);
   // return response;
   String r = "Error!";
   var request = new http.MultipartRequest("POST", Uri.parse('$url'));

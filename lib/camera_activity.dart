@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vision_assistant/camera_services.dart';
 import 'package:vision_assistant/main.dart';
-import 'package:vision_assistant/post_services.dart';
 
 class CameraActivity extends StatefulWidget {
   @override
@@ -39,6 +39,7 @@ class _CameraActivityState extends State<CameraActivity> {
   bool get isWeb => kIsWeb;
 
   CameraController controller;
+  CamService camService = CamService();
   XFile imageFile;
   @override
   void initState() {
@@ -147,8 +148,8 @@ class _CameraActivityState extends State<CameraActivity> {
 
   Future<void> callSpeak() async {
     // _newVoiceText = "error!";
-    String im = await convertImage(imageFile.path);
-    String r = await createPost(im);
+    Uint8List im = await imageFileAsBytes(imageFile.path);
+    String r = await camService.dioRequest(im);
     print(r);
     // Post p = await getPost();
     _newVoiceText = r;
