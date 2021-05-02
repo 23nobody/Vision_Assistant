@@ -1,10 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:vision_assistant/camera_activity.dart';
-import 'package:vision_assistant/experiment_activity.dart';
 import 'package:vision_assistant/home_screen.dart';
-
-import 'text_to_speech.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +23,6 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/exp": (context) => ExperimentAcitvity(),
-        "/tts": (context) => TextToSpeech(),
         "/": (context) => HomeScreen(),
         "/camera": (context) => CameraActivity(),
       },

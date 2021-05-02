@@ -172,7 +172,7 @@ class _CameraActivityState extends State<CameraActivity> {
         child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-            title: Text('Flutter TTS'),
+            title: Text('Vision Assistant'),
           ),
           body: Center(
             child:
@@ -188,7 +188,7 @@ class _CameraActivityState extends State<CameraActivity> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Flutter TTS'),
+          title: Text('Vision Assistant'),
         ),
         body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
