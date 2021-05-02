@@ -45,7 +45,7 @@ class _CameraActivityState extends State<CameraActivity> {
   void initState() {
     super.initState();
     initTts();
-    controller = CameraController(cameras[0], ResolutionPreset.low);
+    controller = CameraController(cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -148,7 +148,7 @@ class _CameraActivityState extends State<CameraActivity> {
 
   Future<void> callSpeak() async {
     // _newVoiceText = "error!";
-    Uint8List im = await imageFileAsBytes(imageFile.path);
+    Uint8List im = await camService.imageFileAsBytes(imageFile.path);
     String r = await camService.dioRequest(im);
     print(r);
     // Post p = await getPost();
