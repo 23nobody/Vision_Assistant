@@ -34,6 +34,8 @@ dependencies:
   xfile: ^1.1.0
   image_size_getter: ^1.0.0
   dio: ^4.0.0
+  shared_preferences: ^2.0.5
+  fluttertoast: ^8.0.6
 
 dev_dependencies:
   flutter_test:

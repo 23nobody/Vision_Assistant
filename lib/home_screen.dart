@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,8 +9,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void _onChange(String text) {
-    setState(() {});
+  String _url;
+
+  void initialUrl() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    _url = preferences.getString('kUrl') ?? 'Please set URL';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialUrl();
+  }
+
+  Future<void> _onChange(String text) async {
+    setState(() {
+      _url = text + '/predict';
+    });
+  }
+
+  Future<String> accessUrl() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String url = preferences.getString('kUrl') ?? 'Please set URL';
+    return url;
   }
 
   @override
@@ -23,6 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(children: [
                   _inputSection(),
                   _btnSection(),
+                  SizedBox(height: 18.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder<String>(
+                        future: accessUrl(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done)
+                            return Text(
+                              'URL is currently set to : ${snapshot.data}',
+                              style: TextStyle(fontSize: 20),
+                            );
+                          else
+                            return CircularProgressIndicator();
+                        }),
+                  ),
                 ]))));
   }
 
@@ -48,8 +86,19 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Theme.of(context).accentColor,
             elevation: 6,
             child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () {},
+              splashColor: Colors.grey.withAlpha(30),
+              onTap: () async {
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                await preferences.setString('kUrl', _url);
+                setState(() {
+                  Fluttertoast.showToast(
+                    msg: "Url set to $_url",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
+                });
+              },
               child: Container(
                 padding: EdgeInsets.all(10),
                 height: 50.0,
@@ -75,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Theme.of(context).accentColor,
             elevation: 6,
             child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
+              splashColor: Colors.grey.withAlpha(30),
               onTap: () {
                 Navigator.pushNamed(context, "/camera");
               },

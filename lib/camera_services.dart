@@ -6,12 +6,22 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CamService {
-  String url = 'https://b1b5dfbcc124.ngrok.io/predict';
   Dio dio = Dio();
+  Future<String> _accessUrl() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String url = preferences.getString('kUrl') ?? 'Please set URL';
+    return url;
+  }
+
   Future<String> dioRequest(Uint8List imagedata) async {
+    String url = await _accessUrl();
     String r = "Error!";
+    if (url == 'Please set URL') {
+      return "Please set URL first!";
+    }
     try {
       var encodedData = await compute(base64Encode, imagedata);
       Response response = await dio.post(url, data: {'image': encodedData});

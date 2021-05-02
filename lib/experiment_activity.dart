@@ -157,11 +157,10 @@ class _ExperimentAcitvityState extends State<ExperimentAcitvity> {
             FutureBuilder<Post>(
                 future: callSpeak(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return Text(
-                        'Title from Post JSON : ${snapshot.data.title}');
-                  else
-                    return CircularProgressIndicator();
+                  // if (snapshot.connectionState == ConnectionState.done)
+                  return Text('Title from Post JSON : abc');
+                  // else
+                  //   return CircularProgressIndicator();
                 }),
           ]),
         ),
