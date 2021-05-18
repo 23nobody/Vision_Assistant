@@ -18,6 +18,7 @@ class CamService {
 
   Future<String> dioRequest(Uint8List imagedata) async {
     String url = await _accessUrl();
+    print(url);
     String r = "Error!";
     if (url == 'Please set URL') {
       return "Please set URL first!";

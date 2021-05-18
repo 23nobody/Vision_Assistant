@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _btnSection(),
                   SizedBox(height: 18.0),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(25.0),
                     child: FutureBuilder<String>(
                         future: accessUrl(),
                         builder: (context, snapshot) {
